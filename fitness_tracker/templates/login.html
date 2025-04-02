@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | FitTrack Pro</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to right, #000428, #004e92);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 2.5rem;
+            margin: 1rem;
+            background: #121212; /* Dark container */
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 82, 204, 0.15); /* Blue-tinted shadow */
+            border: 1px solid #1e1e1e; /* Subtle border */
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .login-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+        
+        .login-header p {
+            color: #a0a0a0; /* Light gray */
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: #e0e0e0; /* Off-white */
+            font-size: 0.95rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: #1e1e1e; /* Dark input background */
+            border: 1px solid #2d2d2d; /* Dark border */
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.25s;
+            color: #ffffff;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3a7bd5; /* Bright blue */
+            box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+        }
+        
+        .form-group input::placeholder {
+            color: #5a5a5a; /* Gray placeholder */
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff); /* Blue gradient */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
+        }
+        
+        
+        .error-message {
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            background-color: rgba(255, 77, 77, 0.1);
+            padding: 0.5rem;
+            border-radius: 4px;
+            border-left: 3px solid #ff4d4d;
+        }
+        
+        /* Animation for form inputs */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .login-button { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome to FitTrack Pro</h1>
+            <p>Sign in to continue your fitness journey</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="error-message">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="error-message">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="login-button">Log In</button>
+            
+            
+        </form>
+    </div>
+</body>
+</html>

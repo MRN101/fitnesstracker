@@ -1,0 +1,526 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Fitness Tracker</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #000000, #000428, #004e92);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #000;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            border-bottom: 2px solid #004e92;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        header .logout-btn {
+            display: inline-block;
+            background-color: #ff4444;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        header .logout-btn:hover {
+            background-color: #cc0000;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border: 1px solid #004e92;
+        }
+
+        .profile-section h2 {
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            color: #fff;
+        }
+
+        .profile-section p {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        /* Input Forms */
+        .input-forms {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 30%;
+            border: 1px solid #004e92;
+        }
+
+        .form-container h2 {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        .form-container input,
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #004e92;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+
+        .form-container button {
+            background-color: #004e92;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: #003366;
+        }
+
+        /* Activity Table */
+        .activity-history {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid #004e92;
+        }
+
+        .activity-history h2 {
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            color: #fff;
+        }
+
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .activity-table th,
+        .activity-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #004e92;
+            color: #fff;
+        }
+
+        .activity-table th {
+            background-color: rgba(0, 78, 146, 0.5);
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .activity-table tr:hover {
+            background-color: rgba(0, 78, 146, 0.2);
+        }
+
+        .activity-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .workout-badge { background-color: #36a2eb; }
+        .steps-badge { background-color: #4bc0c0; }
+        .food-badge { background-color: #ff6384; }
+
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid #004e92;
+        }
+
+        .chart-section h2 {
+            color: #fff;
+        }
+
+        .chart-section canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .input-forms {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-container {
+                width: 100%;
+            }
+
+            .activity-history h2 {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome, {{ user.username }}</h1>
+            <p>Your Fitness Dashboard</p>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </header>
+
+        <section class="profile-section">
+            <h2>Your Profile</h2>
+            <p><strong>Age:</strong> {{ user.profile.age }}</p>
+            <p><strong>Weight:</strong> {{ user.profile.weight }} kg</p>
+            <p><strong>Height:</strong> {{ user.profile.height }} cm</p>
+            <p><strong>Gender:</strong> {{ user.profile.gender }}</p>
+            <p><strong>BMI:</strong> {{ user.profile.calculate_bmi }}</p>
+            <p><strong>Today's Calorie Balance:</strong>
+                <span id="calorie-deficit" style="color: {% if calorie_deficit > 0 %}green{% else %}red{% endif %}">
+                    {{ calorie_deficit }}
+                </span>
+            </p>
+        </section>
+
+        <section class="input-forms">
+            <div class="form-container">
+                <h2>Add Workout</h2>
+                <form id="workout-form" method="POST" action="{% url 'add_workout' %}">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Workout name" required>
+                    <input type="number" name="calories" placeholder="Calories burned" required>
+                    <input type="date" name="date" value="{{ current_date|date:'Y-m-d' }}">
+                    <button type="submit">Add Workout</button>
+                </form>
+            </div>
+
+            <div class="form-container">
+                <h2>Track Steps</h2>
+                <form id="steps-form" method="post" action="{% url 'add_steps' %}">
+                    {% csrf_token %}
+                    <input type="number" name="steps" placeholder="Enter steps" required>
+                    <input type="date" name="date" value="{{ current_date|date:'Y-m-d' }}">
+                    <button type="submit">Add Steps</button>
+                </form>
+            </div>
+
+            <div class="form-container">
+                <h2>Add Food Intake</h2>
+                <form id="nutrition-form" method="POST" action="{% url 'add_nutrition' %}">
+                    {% csrf_token %}
+                    <input type="text" name="food_name" placeholder="Food name" required>
+                    <input type="number" name="calories" placeholder="Calories" required>
+                    <input type="date" name="date" value="{{ current_date|date:'Y-m-d' }}">
+                    <button type="submit">Add Food</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="activity-history">
+            <h2>Recent Activities</h2>
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Calories</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="activity-table-body">
+                    {% for workout in workouts %}
+                    <tr data-type="workout" data-id="{{ workout.id }}">
+                        <td>{{ workout.date|date:"Y-m-d" }}</td>
+                        <td><span class="activity-badge workout-badge">Workout</span></td>
+                        <td>{{ workout.name }}</td>
+                        <td>{{ workout.calories }}</td>
+                        <td><button class="delete-btn" data-type="workout">Delete</button></td>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% for step in steps %}
+                    <tr data-type="steps" data-id="{{ step.id }}">
+                        <td>{{ step.date|date:"Y-m-d" }}</td>
+                        <td><span class="activity-badge steps-badge">Steps</span></td>
+                        <td>{{ step.steps_taken }} steps</td>
+                        <td>{{ step.calories_burned }}</td>
+                        <td><button class="delete-btn" data-type="steps">Delete</button></td>
+                    </tr>
+                    {% endfor %}
+                    
+                    {% for item in nutrition %}
+                    <tr data-type="nutrition" data-id="{{ item.id }}">
+                        <td>{{ item.date|date:"Y-m-d" }}</td>
+                        <td><span class="activity-badge food-badge">Food</span></td>
+                        <td>{{ item.food_name }}</td>
+                        <td>{{ item.calories }}</td>
+                        <td><button class="delete-btn" data-type="nutrition">Delete</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="chart-section">
+            <h2>Weekly Summary</h2>
+            <canvas id="weeklyChart"></canvas>
+        </section>
+
+        <script>
+            // Initialize chart with server data
+            const chartData = JSON.parse('{{ chart_data|escapejs }}');
+            const weeklyChart = new Chart(
+                document.getElementById('weeklyChart').getContext('2d'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: 'Workout Calories',
+                                data: chartData.workout,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                            },
+                            {
+                                label: 'Step Calories',
+                                data: chartData.steps,
+                                backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                            },
+                            {
+                                label: 'Food Calories',
+                                data: chartData.nutrition,
+                                backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { 
+                            y: { 
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#fff'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    }
+                }
+            );     
+
+            // Function to add a new row to the activity table
+            function addActivityRow(type, data) {
+                const tableBody = document.getElementById('activity-table-body');
+                const newRow = document.createElement('tr');
+                newRow.dataset.type = type;
+                newRow.dataset.id = data.id;
+                
+                let badgeClass, activityType, description, calories;
+                
+                if (type === 'workout') {
+                    badgeClass = 'workout-badge';
+                    activityType = 'Workout';
+                    description = data.name;
+                    calories = data.calories;
+                } else if (type === 'steps') {
+                    badgeClass = 'steps-badge';
+                    activityType = 'Steps';
+                    description = data.steps + ' steps';
+                    calories = data.calories_burned;
+                } else {
+                    badgeClass = 'food-badge';
+                    activityType = 'Food';
+                    description = data.food_name;
+                    calories = data.calories;
+                }
+                
+                newRow.innerHTML = `
+                    <td>${data.date}</td>
+                    <td><span class="activity-badge ${badgeClass}">${activityType}</span></td>
+                    <td>${description}</td>
+                    <td>${calories}</td>
+                    <td><button class="delete-btn" data-type="${type}">Delete</button></td>
+                `;
+                
+                tableBody.insertBefore(newRow, tableBody.firstChild);
+            }
+
+            // Function to update calorie deficit display
+            function updateCalorieDeficit(deficit) {
+                const deficitElement = document.getElementById('calorie-deficit');
+                deficitElement.textContent = deficit;
+                deficitElement.style.color = deficit > 0 ? 'green' : 'red';
+            }
+
+            // Generic form handler
+            function setupFormHandler(formId, type) {
+                const form = document.getElementById(formId);
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            form.reset();
+                            addActivityRow(type, data[type]);
+                            updateCalorieDeficit(data.deficit);
+                            
+                            // Update chart data
+                            weeklyChart.data.datasets.forEach(dataset => {
+                                if (dataset.label.includes('Workout')) dataset.data = data.chart.workout;
+                                if (dataset.label.includes('Step')) dataset.data = data.chart.steps;
+                                if (dataset.label.includes('Food')) dataset.data = data.chart.nutrition;
+                            });
+                            weeklyChart.update();
+                        }
+                    });
+                });
+            }
+
+            // Delete button handler
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('delete-btn')) {
+                    const row = e.target.closest('tr');
+                    const type = row.dataset.type;
+                    const id = row.dataset.id;
+                    
+                    if (confirm(`Delete this ${type} entry?`)) {
+                        fetch(`/delete_${type}/${id}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                row.remove();
+                                updateCalorieDeficit(data.deficit);
+                                
+                                // Update chart data
+                                weeklyChart.data.datasets.forEach(dataset => {
+                                    if (dataset.label.includes('Workout')) dataset.data = data.chart.workout;
+                                    if (dataset.label.includes('Step')) dataset.data = data.chart.steps;
+                                    if (dataset.label.includes('Food')) dataset.data = data.chart.nutrition;
+                                });
+                                weeklyChart.update();
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Initialize form handlers
+            document.addEventListener('DOMContentLoaded', () => {
+                setupFormHandler('workout-form', 'workout');
+                setupFormHandler('steps-form', 'steps');
+                setupFormHandler('nutrition-form', 'nutrition');
+            });
+        </script>
+    </div>
+</body>
+</html>

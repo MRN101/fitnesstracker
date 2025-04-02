@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Fitness Tracker</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #000428, #004e92);
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: #00aaff;
+        }
+        .auth-section h2 {
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #ffffff;
+        }
+        .auth-buttons {
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to Fitness Tracker</h1>
+            <p>Track your workouts, steps, and nutrition effortlessly.</p>
+        </header>
+
+        <section class="auth-section">
+            <h2>Get Started</h2>
+            <p>Login to access your fitness dashboard or create a new account.</p>
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}" class="btn">Login</a>
+                <a href="{% url 'signup' %}" class="btn">Sign Up</a>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

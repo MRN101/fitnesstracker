@@ -1,0 +1,14 @@
+<!-- templates/activity_feed.html -->
+<div class="activity-items">
+    {% for activity in activities %}
+    <div class="activity-item">
+        <span class="activity-badge {% if activity.type == 'workout' %}workout-badge{% elif activity.type == 'steps' %}steps-badge{% else %}food-badge{% endif %}">
+            {{ activity.type|title }}
+        </span>
+        <span class="activity-date">{{ activity.date|date:"M d" }}</span>
+        <span class="activity-name">{{ activity.name }}</span>
+        <span class="activity-calories">{{ activity.calories }} cal</span>
+        <button class="delete-activity" data-type="{{ activity.type }}" data-id="{{ activity.id }}">×</button>
+    </div>
+    {% endfor %}
+</div>
